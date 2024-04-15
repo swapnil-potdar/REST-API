@@ -13,6 +13,8 @@ app.use(function(req,res,next){
   res.send('Hello World!')
 }) */
 
+app.use(express.static("./public"));
+
 app.get('/profile', (req, res) => {
   res.send('Hello from profile!')
 })
@@ -29,7 +31,18 @@ app.get('/contact', (req, res) => {
   res.render("contact")
 })
 
+app.get('/error', (req, res) => {
+  throw Error("something went wrong");
+  /* res.render("error") */
+})
 
+app.use(function errorHandler (err, req, res, next) {
+  if (res.headersSent) {
+    return next(err)
+  }
+  res.status(500)
+  res.render('error', { error: err })
+})
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
